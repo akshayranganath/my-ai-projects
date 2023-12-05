@@ -1,0 +1,1 @@
+AI is growing and I am trying to learn the concepts and educate myself by creating sample programs and simple use cases. The purpose of this repo is to gather the work that I do and use it for educating myself and refreshing my memory when needed in the future.
