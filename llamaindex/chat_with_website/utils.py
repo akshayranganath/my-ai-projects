@@ -55,7 +55,7 @@ def get_service_context_and_llm():
     )
     embedding = BedrockEmbedding(
         client=bedrock_runtime,
-        model=os.environ['BEDROCK_MODEL']
+        model=os.environ['BEDROCK_EMBED_MODEL']
     )
 
     # to read on EC2/AWS instances, use these methods instead
