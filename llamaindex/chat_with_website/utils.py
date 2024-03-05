@@ -1,19 +1,22 @@
 from dotenv import load_dotenv
 import os
 import uuid
+import boto3
 
 from llama_index.core.llms import ChatMessage, MessageRole
 from llama_index.llms.bedrock import Bedrock
 from llama_index.core import ServiceContext, StorageContext, VectorStoreIndex, Document
 from llama_index.embeddings.bedrock import BedrockEmbedding
-import chromadb
 from llama_index.vector_stores.chroma import ChromaVectorStore
 # enabling debug
 from llama_index.core.callbacks import LlamaDebugHandler, CallbackManager
-# libraries for PDF reader
-from PyPDF2 import PdfReader
 # libraries for website reader
 from llama_index.readers.web import SimpleWebPageReader
+# library for database
+import chromadb
+# libraries for PDF reader
+from PyPDF2 import PdfReader
+
 
 
 # exceptions
@@ -39,14 +42,20 @@ def get_service_context_and_llm():
     # initialize the service and storage context
     debug = LlamaDebugHandler(print_trace_on_end=True)
     callback_manager = CallbackManager(handlers=[debug])
+    # Setup bedrock
+    bedrock_runtime = boto3.client(
+        service_name="bedrock-runtime",
+        region_name="us-east-1",
+    )
 
     llm = Bedrock(
         model=os.environ["BEDROCK_MODEL"],
         temperature=os.environ["CHAT_TEMPERATURE"],
-        profile_name=os.environ["AWS_PROFILE_NAME"],
+        client=bedrock_runtime,
     )
-    embedding = BedrockEmbedding.from_credentials(
-        aws_profile=os.environ["AWS_PROFILE_NAME"]
+    embedding = BedrockEmbedding(
+        client=bedrock_runtime,
+        model=os.environ['BEDROCK_MODEL']
     )
 
     # to read on EC2/AWS instances, use these methods instead
