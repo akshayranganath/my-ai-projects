@@ -21,6 +21,8 @@ pip install -r requirements.txt
 
 To start the application, run the `streamlit` command. The application starts at a default port of `8501`.
 
+You may optionally want to execute the [screen](https://www.howtogeek.com/662422/how-to-use-linuxs-screen-command/) command so that the application is not tied to your terminal access.
+
 ```
 streamlit run main.py
 ```
