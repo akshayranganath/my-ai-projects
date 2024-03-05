@@ -4,7 +4,7 @@ import boto3
 
 from llama_index.llms.bedrock import Bedrock
 from llama_index.embeddings.bedrock import BedrockEmbedding
-from llama_index.core import ServiceContext, StorageContext
+from llama_index.core import ServiceContext, StorageContext, VectorStoreIndex
 # enabling debug
 from llama_index.core.callbacks import LlamaDebugHandler, CallbackManager
 from llama_index.vector_stores.chroma import ChromaVectorStore
@@ -12,6 +12,10 @@ from llama_index.vector_stores.chroma import ChromaVectorStore
 import chromadb
 
 class MyBedrockObject():
+    """Custom object to contain all the necessary information on the Bedrock engine and LlamaIndex objects.
+
+        Objects contained are LLM, Embedding, ServiceContext, StorageContext, VectorIndex and ChatEngine
+    """
     
     def __init__(self):
         load_dotenv()
@@ -62,3 +66,30 @@ class MyBedrockObject():
         self.vector_store = ChromaVectorStore(chroma_collection=chroma_collection)
 
         self.storage_context = StorageContext.from_defaults(vector_store=self.vector_store)
+
+        # now setup the chat engine as well
+        index = VectorStoreIndex.from_vector_store(
+            self.vector_store,
+            service_context=self.service_context,
+        )
+        # Considering we want to use RAG, use the CHAT_MODE as 'context'.
+        # for details on different chat modes, refer to https://docs.llamaindex.ai/en/stable/module_guides/deploying/chat_engines/root.html
+        self.chat_engine = index.as_chat_engine(
+                chat_mode=os.environ.get('CHAT_MODE'), verbose=True
+        )
+
+    def get_llm_model()->str:
+        """Returns the name of the bedrock model being used.
+
+        Returns:
+            str: Bedrock foundation model name
+        """
+        return os.environ["BEDROCK_MODEL"]
+    
+    def get_embed_model()->str:
+        """Returns the name of the bedrock embedding model being used.
+
+        Returns:
+            str: Bedrock embedding model name
+        """
+        return os.environ['BEDROCK_EMBED_MODEL']
