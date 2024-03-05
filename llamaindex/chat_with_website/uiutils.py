@@ -1,15 +1,14 @@
 import streamlit as st
-from utils import get_vector_store_index_based_chat_engine, get_service_context_and_llm, get_vector_store
+from utils import get_vector_store_index_based_chat_engine, initialize_bedrock
 from botocore.exceptions import ClientError
 
+@st.cache_resource
 def initialize():
     if "vector_store" not in st.session_state.keys():
-        # setup LLM and service context for Bedrock
-        st.session_state.service_context,st.session_state.llm = get_service_context_and_llm()
-        # get the vector store
-        st.session_state.vector_store = get_vector_store()
+        # setup LLM, service context and vector store for Bedrock
+        st.session_state.bedrock_obj = initialize_bedrock()        
 
-
+@st.cache_data
 def build_page_structure(title:str, icon:str)->None:
     st.set_page_config(
     page_title=title,
@@ -28,6 +27,11 @@ def build_page_structure(title:str, icon:str)->None:
         st.page_link("pages/website.py", label="Website", icon="🌐")
         st.page_link("pages/chat.py", label="Chat", icon="💬")
 
+@st.cache_resource
+def get_chat_engine():
+    if "chat_engine" not in st.session_state.keys():        
+        st.session_state.chat_engine = get_vector_store_index_based_chat_engine(st.session_state.bedrock_obj)
+
 def handle_chat(clear_session:bool=True)->None:
     st.subheader("Chat")
     if "messages" not in st.session_state.keys() or clear_session==True:
@@ -39,11 +43,7 @@ def handle_chat(clear_session:bool=True)->None:
         ]
     
     # check and initialize index
-    if "chat_engine" not in st.session_state.keys():        
-        st.session_state.chat_engine = get_vector_store_index_based_chat_engine(
-            vector_store=st.session_state.vector_store, 
-            service_context=st.session_state.service_context
-        )
+    get_chat_engine()
 
     if prompt := st.chat_input("Your question: "):
         st.session_state.messages.append({"role": "user", "content": prompt})
