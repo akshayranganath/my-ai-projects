@@ -1,0 +1,5 @@
+streamlit
+llama-index
+chromadb
+llama-index-llms-bedrock
+llama-index-embeddings-bedrock
