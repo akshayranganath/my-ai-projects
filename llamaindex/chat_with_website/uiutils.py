@@ -1,24 +1,20 @@
 import streamlit as st
-from utils import get_vector_store_index_based_chat_engine, get_service_context_and_llm, get_vector_store
+from utils import initialize_bedrock
 from botocore.exceptions import ClientError
 
 def initialize():
-    if "vector_store" not in st.session_state.keys():
-        # setup LLM and service context for Bedrock
-        st.session_state.service_context,st.session_state.llm = get_service_context_and_llm()
-        # get the vector store
-        st.session_state.vector_store = get_vector_store()
-
+    if "bedrock_obj" not in st.session_state.keys():
+        # setup LLM, service context and vector store for Bedrock        
+        st.session_state.bedrock_obj = initialize_bedrock()        
 
 def build_page_structure(title:str, icon:str)->None:
     st.set_page_config(
-    page_title=title,
-    page_icon=icon,
-    layout="centered",
-    initial_sidebar_state="auto",
-    menu_items=None,
-    )
-    
+        page_title=title,
+        page_icon=icon,
+        layout="centered",
+        initial_sidebar_state="auto",
+        menu_items=None,
+    )    
     st.title(f"{icon} {title} {icon}")
 
     # add a sidebar for chatting with PDF
@@ -36,27 +32,22 @@ def handle_chat(clear_session:bool=True)->None:
                 "role": "assistant",
                 "content": "Ask me a question about the website that was just loaded..",
             }
-        ]
-    
-    # check and initialize index
-    if "chat_engine" not in st.session_state.keys():        
-        st.session_state.chat_engine = get_vector_store_index_based_chat_engine(
-            vector_store=st.session_state.vector_store, 
-            service_context=st.session_state.service_context
-        )
+        ]        
 
     if prompt := st.chat_input("Your question: "):
         st.session_state.messages.append({"role": "user", "content": prompt})
 
     for message in st.session_state.messages:
-        with st.chat_message(message["role"]):
-            st.write(message["content"])            
+        # don't print system message.
+        if message["role"]!="system":
+            with st.chat_message(message["role"]):
+                st.write(message["content"])            
 
     # if the last message is from a user, now, run the llm
     if st.session_state.messages[-1]["role"] == "user":
         with st.spinner('Waiting for response from GPT...'):
             try:
-                response = st.session_state.chat_engine.chat(message=prompt)
+                response = st.session_state.bedrock_obj.chat_engine.chat(message=prompt)
                 st.write(response.response)
 
                 # add the message into the message history

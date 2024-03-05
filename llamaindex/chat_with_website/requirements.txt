@@ -3,3 +3,5 @@ llama-index
 chromadb
 llama-index-llms-bedrock
 llama-index-embeddings-bedrock
+llama-index-readers-web
+PyPDF2

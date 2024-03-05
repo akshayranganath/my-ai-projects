@@ -11,8 +11,7 @@ if st.button(label="Load Data"):
     with st.spinner("Loading data.."):
         result = load_data_from_url(
             url=url,
-            vector_store=st.session_state.vector_store,
-            service_context=st.session_state.service_context
+            bedrock_obj=st.session_state.bedrock_obj        
         )
         if result == True:
             st.success(f"Loaded {url} successfully.")
