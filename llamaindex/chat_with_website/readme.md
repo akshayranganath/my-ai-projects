@@ -8,6 +8,35 @@ This application provides the ability to perform Retrieval Augmented Generation 
 * Ingest and index data from a PDF
 * Allow users to Chat with their data
 
+## Setup
+### Install
+
+First install all the dependecies. You'll require python 3.x to run the code. 
+
+```
+pip install -r requirements.txt
+```
+
+### Execute
+
+To start the application, run the `streamlit` command. The application starts at a default port of `8501`.
+
+```
+streamlit run main.py
+```
+
+If you want to make changes to the UI like changing the theme or server port, update the `/.streamlit/config.toml` file. For more information, please refer to [streamlit docs](https://docs.streamlit.io/library/advanced-features/configuration).
+
+### Installing on EC2
+
+If you are planning to run this application from an Amazon EC2 instance, you'll need to do the additional things:
+
+* Create an IAM role. For this role, provide access to Bedrock. There is a pre-defined policy to `BedrockFullAccess` to help get you started. My suggestion is that create your own role that provides just enough permission necessary.
+* Update the security group to make 2 changes:
+    * For your EC2 instance, apply the IAM role created above.
+    * Update the Inbound rules to allow access on port `8501`.
+* Follow the install/execute steps above. 
+
 ## Architecture
 
 This application relies on the following technologies:
