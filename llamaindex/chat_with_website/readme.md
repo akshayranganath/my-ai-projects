@@ -9,6 +9,17 @@ This application provides the ability to perform Retrieval Augmented Generation 
 * Allow users to Chat with their data
 
 ## Setup
+
+### Branch Useage
+
+If you want to run this code locally, please use the brain `main`. If you want to host and execute this from an EC2 server, please use the branch `aws`. To switch git branches, please use the command:
+
+```
+git switch <branch-name>
+```
+
+On `main`, it relies on the presence of AWS credentials on the local system. On the `aws` branch, it assumes the access is handled outside of the application.
+
 ### Install
 
 First install all the dependecies. You'll require python 3.x to run the code. 
