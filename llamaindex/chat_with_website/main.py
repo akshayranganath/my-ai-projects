@@ -1,20 +1,8 @@
 import streamlit as st
+from uiutils import build_page_structure
 
-st.set_page_config(
-    page_title="Chat with your WebPage",
-    page_icon="🔎",
-    layout="centered",
-    initial_sidebar_state="auto",
-    menu_items=None,
-)
+build_page_structure("RAG Demos", "🏠")
 
-with st.sidebar:
-    st.page_link("main.py", label="Home", icon="🏠")
-    st.page_link("pages/pdf.py", label="PDF", icon="📁")
-    st.page_link("pages/website.py", label="Website", icon="🌐")
-    st.page_link("pages/chat.py", label="Chat", icon="💬")
-
-st.title('🔎 RAG Demos 🔎')
 st.caption('Chat with your websites and documents using Amazon Bedrock.')
 
 st.subheader('Objective')
