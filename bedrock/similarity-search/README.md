@@ -10,7 +10,7 @@ I began by using Amazon Bedrock and `Titan Embed Image` to create the embeddings
 
 **Assumptions**
 
-* Images are uploaded to Cloudinary
+* Images are accessible as public URLs.
 * Streamlit has write access to the system's temp directory
 * ChromaDB's embedding is based on [OpenClip](https://huggingface.co/docs/hub/open_clip). 
 * Default similarity search is eucleadean distance `l2` algorithm
