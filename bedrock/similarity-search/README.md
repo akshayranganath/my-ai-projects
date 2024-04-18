@@ -2,7 +2,7 @@
 
 I needed to create a demo to show the use of **multimodal** embedding and also help implement a solution where a user could upload an image and search for similar images. To accomplish both, I have implemented this project.
 
-![search result](https://res.cloudinary.com/dbmataac4/image/upload/f_auto,q_auto/workshop/presentation/Screenshot_2024-04-18_at_10.30.57_AM.png)
+![search result](https://res.cloudinary.com/dbmataac4/image/upload/f_auto,q_auto,h_550,e_sharpen/workshop/presentation/Screenshot_2024-04-18_at_10.30.57_AM.png)
 
 ## Architecture Details
 
