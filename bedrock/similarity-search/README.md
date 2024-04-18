@@ -4,7 +4,7 @@ I needed to create a demo to show the use of **multimodal** embedding and also h
 
 ## Architecture Details
 
-I began by using Amazon Bedrock and `Titan Embed Image` to create the embeddings. However, I realized this was more complex than necessary. ChromaDB[https://docs.trychroma.com/] implements [multimodal embedding](https://docs.trychroma.com/multi-modal). I used this functionality for the project.
+ChromaDB[https://docs.trychroma.com/] implements [multimodal embedding](https://docs.trychroma.com/multi-modal). I used this functionality for the project.
 
 ## How does it work?
 
@@ -13,7 +13,10 @@ I began by using Amazon Bedrock and `Titan Embed Image` to create the embeddings
 * Images are accessible as public URLs.
 * Streamlit has write access to the system's temp directory
 * ChromaDB's embedding is based on [OpenClip](https://huggingface.co/docs/hub/open_clip). 
-* Default similarity search is eucleadean distance `l2` algorithm
+* Default similarity search is Eucleadean distance `l2` algorithm. However, in this project, I am using `cosine distance` metric.
+* Lastly, the search looks for the 3 closes matches and a cosine distance less than 0.5.
+
+For more details on using ChromaDB and the algorithms, please refer to this excellent article, **[Embeddings and Vector Databases With ChromaDB – Real Python](https://realpython.com/chromadb-vector-database/)**.
 
 
 ### Indexing

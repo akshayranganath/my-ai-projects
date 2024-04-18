@@ -1,29 +1,22 @@
 import chromadb
-from chromadb.db.base import NotFoundError, UniqueConstraintError
 from chromadb.utils.data_loaders import ImageLoader
 from chromadb.utils.embedding_functions import OpenCLIPEmbeddingFunction
 
+DB_PATH='../data/my_collection'
+DB_COLLECTION_NAME='multimodal_collection'
 
 class DBObject():
-    def __init__(self, collection_name:str='multimodal_collection', db_path:str='../data/my_collection')->None:
+    def __init__(self, collection_name:str=DB_COLLECTION_NAME, db_path:str=DB_PATH)->None:
     # this may throw errors for further library installations
         self.embedding_function = OpenCLIPEmbeddingFunction()
         self.image_loader = ImageLoader()
         self.client = chromadb.PersistentClient(path=db_path)
-
-        try:
-            self.collection = self.client.create_collection(
-                name=collection_name,
-                embedding_function=self.embedding_function,
-                data_loader=self.image_loader)
-        except UniqueConstraintError as e:
-            print('Collection already present')
-            self.collection = self.client.get_collection(
-                name = 'multimodal_collection',
-                embedding_function=self.embedding_function,
-                data_loader=self.image_loader
-            )
-
+    
+        self.collection = self.client.get_or_create_collection(
+            name=collection_name,
+            embedding_function=self.embedding_function,
+            metadata={"hnsw:space": "cosine"}, # use cosine distance metric
+            data_loader=self.image_loader)
 
     def add_object_to_collection(self, file_name:str, url:str)->bool:
         result = False
