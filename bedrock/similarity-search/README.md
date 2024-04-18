@@ -39,3 +39,7 @@ When a user wants to search for an image, the following occurs:
 * Search query is executed with the downloaded image. 
 
 Internally, chroma embeds the image and then runs a search for the match. The query returns the N-top results (defaults to 3). On the front-end, the results are displayed only if the distance between the input image and result is less than 0.5. This is to filter out results that are too far apart.
+
+## Demo
+
+Here's a demo of using the application: [video](https://res.cloudinary.com/dbmataac4/video/upload/f_auto,q_auto/workshop/visually_similar_search.mp4).
