@@ -1,0 +1,18 @@
+{
+  "gguf": {
+    "format": "gguf(json)",
+    "num_samples": 256,
+    "elapsed_sec": 2.794809249928221,
+    "latency_ms_per_sample": 10.917223632532114,
+    "throughput_samples_per_sec": 91.59838010646874,
+    "accuracy_percent": 98.828125
+  },
+  "mlx": {
+    "format": "mlx(npz)",
+    "num_samples": 256,
+    "elapsed_sec": 0.05521266697905958,
+    "latency_ms_per_sample": 0.21567448038695147,
+    "throughput_samples_per_sec": 4636.617175132887,
+    "accuracy_percent": 98.828125
+  }
+}
