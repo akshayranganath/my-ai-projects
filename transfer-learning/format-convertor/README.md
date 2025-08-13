@@ -1,5 +1,8 @@
 # Format Convertor
 
+![./benchmarking.png](./benchmarking.png)
+
+
 With this project, I want to understand the concept of `gguf` and `mlx` files. Using a simple training algorithm like MNIST, I want to build a trained model. With this model, I'll do the following:
 
 1. Save model to some binary format (like `safetensors`)
