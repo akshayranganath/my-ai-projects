@@ -2,6 +2,7 @@
 
 In the quest for clean, abundant energy, one technology stands out as the holy grail of power generation: nuclear fusion. Unlike its controversial cousin, fission—which splits atoms to release energy—fusion combines light atoms to produce massive amounts of power, the same process that has kept our sun burning for billions of years. After decades of being “30 years away,” fusion energy is finally showing concrete signs of moving from science fiction toward scientific reality.
 
+![](./hero_image.png)
 ## A Watershed Moment for Fusion
 
 December 2022 marked a historic milestone in the fusion energy quest. Scientists at the National Ignition Facility (NIF) achieved what many thought impossible: fusion ignition—producing more energy from fusion than the laser energy delivered to the target. This achievement—about 1.5 times the laser input—represents the fusion equivalent of the Wright brothers’ first flight at Kitty Hawk. It proved the concept works, even if commercial air travel (or in this case, commercial fusion power) remains years away.
