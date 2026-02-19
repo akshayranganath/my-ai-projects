@@ -37,6 +37,6 @@ sparse_model = SparseTextEmbedding("Qdrant/bm25")
 
 sparse_vectors = sparse_model.embed([text1, text2, text3])
 sparse_vectors = list(sparse_vectors)
-print(sparse_vectors)
+print(sparse_vectors[0].indices, sparse_vectors[0].values)
 print(f"📊 BM25 similarity of text1 and text2 :\t{np.dot(sparse_vectors[0].values, sparse_vectors[1].values):.4f}")
 print(f"📊 BM25 similarity of text1 and text3 :\t{np.dot(sparse_vectors[0].values, sparse_vectors[2].values):.4f}")

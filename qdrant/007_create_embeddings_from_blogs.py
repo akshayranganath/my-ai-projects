@@ -1,6 +1,7 @@
 from pathlib import Path
 import numpy as np
 from sentence_transformers import SentenceTransformer
+from fastembed import SparseTextEmbedding
 from tqdm.notebook import tqdm
 import re
 import tiktoken
@@ -12,6 +13,7 @@ import pypandoc
 # first create the model
 model = SentenceTransformer('all-MiniLM-L6-v2')
 tokenizer = model.tokenizer
+sparse_model = SparseTextEmbedding("Qdrant/bm25")
 
 def get_metadata(markdown):
 
@@ -77,14 +79,19 @@ def get_embeddings(chunks:List[str], file_path:str, metadata:Dict)->List[Dict]:
         normalize_embeddings=True, # good for cosine similarity
         show_progress_bar=True
     )
+
+    # bm_25 vectors
+    sparse_vectors = sparse_model.embed(chunks)
     
     # package for upsert later
     out = []
-    for i, (chunk, vec) in enumerate(zip(chunks, vectors)):
+    for i, (chunk, vec, sparse_vec) in enumerate(zip(chunks, vectors, sparse_vectors)):
         out.append({
             "id": f"{Path(file_path).name}:{i}",
             "text": chunk,
             "vector": vec,
+            "sparse_vector": sparse_vec.values,
+            "sparse_index": sparse_vec.indices,
             "metadata": {
                 "source": str(file_path),
                 "chunk_id": i,
@@ -100,6 +107,9 @@ def write_to_json(embeddings:List[Dict], fd):
     for embed in embeddings:
         # convert the vecotor to a list
         embed['vector'] = embed['vector'].tolist()
+        # same with sparse vectors
+        embed['sparse_vector'] = embed['sparse_vector'].tolist()        
+        embed['sparse_index'] = embed['sparse_index'].tolist()        
         fd.write(f"{json.dumps(embed)}\n")
     
 def main():
