@@ -11,7 +11,7 @@ dependencies = [
     "asyncio>=4.0.0",
     "logfire>=5.1.0",
     "pydantic-ai>=2.44.0",
-    "pydantic-ai-slim[duckduckgo]>=2.44.0",
+    "pydantic-ai-slim[duckduckgo,mcp]>=2.44.0",
 ]
 
 [project.scripts]

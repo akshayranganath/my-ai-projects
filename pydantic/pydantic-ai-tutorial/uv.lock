@@ -1316,7 +1316,7 @@ dependencies = [
     { name = "asyncio" },
     { name = "logfire" },
     { name = "pydantic-ai" },
-    { name = "pydantic-ai-slim", extra = ["duckduckgo"] },
+    { name = "pydantic-ai-slim", extra = ["duckduckgo", "mcp"] },
 ]
 
 [package.metadata]
@@ -1324,7 +1324,7 @@ requires-dist = [
     { name = "asyncio", specifier = ">=4.0.0" },
     { name = "logfire", specifier = ">=5.1.0" },
     { name = "pydantic-ai", specifier = ">=2.44.0" },
-    { name = "pydantic-ai-slim", extras = ["duckduckgo"], specifier = ">=2.44.0" },
+    { name = "pydantic-ai-slim", extras = ["duckduckgo", "mcp"], specifier = ">=2.44.0" },
 ]
 
 [[package]]
