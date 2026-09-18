@@ -1,0 +1,141 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="520" viewBox="0 0 1600 520" role="img" aria-labelledby="title desc">
+  <title id="title">Pydantic AI tutorial hero image</title>
+  <desc id="desc">An abstract agent pipeline showing a prompt becoming an intelligent response through tools, memory, telemetry, and MCP.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#090E1C"/>
+      <stop offset="0.55" stop-color="#111A31"/>
+      <stop offset="1" stop-color="#20112C"/>
+    </linearGradient>
+    <radialGradient id="glowRed" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#FF5D67" stop-opacity="0.34"/>
+      <stop offset="1" stop-color="#FF5D67" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowBlue" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#6BE6FF" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#6BE6FF" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="line" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#FF6B73"/>
+      <stop offset="0.5" stop-color="#FFB86B"/>
+      <stop offset="1" stop-color="#6BE6FF"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FF5D67"/>
+      <stop offset="1" stop-color="#FFB86B"/>
+    </linearGradient>
+    <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="smallGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0V40" fill="none" stroke="#FFFFFF" stroke-opacity="0.055" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="1600" height="520" rx="28" fill="url(#bg)"/>
+  <rect x="18" y="18" width="1564" height="484" rx="20" fill="url(#grid)"/>
+  <circle cx="340" cy="238" r="285" fill="url(#glowRed)"/>
+  <circle cx="1260" cy="315" r="310" fill="url(#glowBlue)"/>
+
+  <!-- Decorative orbital curves -->
+  <g fill="none" stroke="#FFFFFF" stroke-opacity="0.13">
+    <ellipse cx="1180" cy="255" rx="365" ry="175" transform="rotate(-18 1180 255)" stroke-width="1.5"/>
+    <ellipse cx="1180" cy="255" rx="300" ry="118" transform="rotate(22 1180 255)" stroke-width="1"/>
+    <path d="M920 430C1070 300 1110 112 1395 78" stroke-width="1" stroke-dasharray="5 10"/>
+  </g>
+
+  <!-- Header -->
+  <g font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">
+    <text x="92" y="106" fill="#FFFFFF" font-size="19" font-weight="700" letter-spacing="3.5">PYDANTIC AI · TUTORIAL</text>
+    <text x="90" y="178" fill="#FFFFFF" font-size="57" font-weight="750" letter-spacing="-1.5">From prompt</text>
+    <text x="90" y="242" fill="url(#accent)" font-size="57" font-weight="750" letter-spacing="-1.5">to agent.</text>
+    <text x="94" y="286" fill="#B9C3D7" font-size="19">A hands-on path through tools, memory, telemetry, and MCP.</text>
+  </g>
+
+  <!-- Small code motif -->
+  <g transform="translate(94 348)">
+    <rect width="292" height="84" rx="13" fill="#070B16" fill-opacity="0.78" stroke="#FFFFFF" stroke-opacity="0.13"/>
+    <circle cx="20" cy="21" r="4" fill="#FF5D67"/><circle cx="35" cy="21" r="4" fill="#FFB86B"/><circle cx="50" cy="21" r="4" fill="#6BE6FF"/>
+    <text x="21" y="54" fill="#FFB86B" font-family="'SFMono-Regular',Consolas,monospace" font-size="14">agent.run(prompt)</text>
+    <text x="21" y="73" fill="#8493AE" font-family="'SFMono-Regular',Consolas,monospace" font-size="12"># make it observable</text>
+  </g>
+
+  <!-- Agent pipeline -->
+  <g transform="translate(520 94)">
+    <!-- main path -->
+    <path d="M68 188H178M258 188H368M448 188H558M638 188H748" stroke="url(#line)" stroke-width="3" stroke-linecap="round" opacity="0.8"/>
+    <path d="M169 182l12 6-12 6M359 182l12 6-12 6M549 182l12 6-12 6M739 182l12 6-12 6" fill="none" stroke="#FFB86B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <!-- nodes -->
+    <g font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" text-anchor="middle">
+      <g transform="translate(0 137)">
+        <circle cx="40" cy="51" r="39" fill="#151E37" stroke="#FF6B73" stroke-width="2"/>
+        <circle cx="40" cy="51" r="48" fill="none" stroke="#FF6B73" stroke-opacity="0.16"/>
+        <path d="M24 46c7-11 25-11 32 0M27 60c7 8 19 8 26 0" fill="none" stroke="#FF8A89" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="29" cy="39" r="3" fill="#FFB86B"/><circle cx="51" cy="39" r="3" fill="#FFB86B"/>
+        <text x="40" y="119" fill="#F5F7FC" font-size="15" font-weight="700">PROMPT</text>
+        <text x="40" y="140" fill="#8190AC" font-size="12">intent</text>
+      </g>
+      <g transform="translate(190 137)">
+        <circle cx="40" cy="51" r="39" fill="#151E37" stroke="#FFB86B" stroke-width="2"/>
+        <circle cx="40" cy="51" r="48" fill="none" stroke="#FFB86B" stroke-opacity="0.16"/>
+        <path d="M25 39h30v24H25zM32 34v10M48 34v10M31 51h18M31 57h11" fill="none" stroke="#FFD18C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <text x="40" y="119" fill="#F5F7FC" font-size="15" font-weight="700">AGENT</text>
+        <text x="40" y="140" fill="#8190AC" font-size="12">reason</text>
+      </g>
+      <g transform="translate(380 137)">
+        <circle cx="40" cy="51" r="39" fill="#151E37" stroke="#6BE6FF" stroke-width="2"/>
+        <circle cx="40" cy="51" r="48" fill="none" stroke="#6BE6FF" stroke-opacity="0.16"/>
+        <path d="M25 43h30M25 51h21M25 59h26" fill="none" stroke="#91EEFF" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="54" cy="43" r="3" fill="#91EEFF"/><circle cx="49" cy="51" r="3" fill="#91EEFF"/><circle cx="55" cy="59" r="3" fill="#91EEFF"/>
+        <text x="40" y="119" fill="#F5F7FC" font-size="15" font-weight="700">TOOLS</text>
+        <text x="40" y="140" fill="#8190AC" font-size="12">act</text>
+      </g>
+      <g transform="translate(570 137)">
+        <circle cx="40" cy="51" r="39" fill="#151E37" stroke="#A797FF" stroke-width="2"/>
+        <circle cx="40" cy="51" r="48" fill="none" stroke="#A797FF" stroke-opacity="0.16"/>
+        <path d="M25 62c-7-14 1-27 15-27s22 13 15 27M31 53h18M34 44v-5M46 44v-5" fill="none" stroke="#C2B5FF" stroke-width="2.5" stroke-linecap="round"/>
+        <text x="40" y="119" fill="#F5F7FC" font-size="15" font-weight="700">TRACE</text>
+        <text x="40" y="140" fill="#8190AC" font-size="12">observe</text>
+      </g>
+      <g transform="translate(760 137)">
+        <circle cx="40" cy="51" r="39" fill="#151E37" stroke="#78E0B5" stroke-width="2"/>
+        <circle cx="40" cy="51" r="48" fill="none" stroke="#78E0B5" stroke-opacity="0.16"/>
+        <path d="M28 51l9 9 19-20" fill="none" stroke="#9AF1CB" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        <text x="40" y="119" fill="#F5F7FC" font-size="15" font-weight="700">RESULT</text>
+        <text x="40" y="140" fill="#8190AC" font-size="12">respond</text>
+      </g>
+    </g>
+
+    <!-- supporting orbit labels -->
+    <g font-family="'SFMono-Regular',Consolas,monospace" font-size="12">
+      <g transform="translate(80 22)">
+        <rect width="104" height="27" rx="13.5" fill="#FF5D67" fill-opacity="0.12" stroke="#FF6B73" stroke-opacity="0.42"/>
+        <text x="52" y="18" fill="#FFB4B4" text-anchor="middle">asyncio</text>
+      </g>
+      <g transform="translate(354 12)">
+        <rect width="112" height="27" rx="13.5" fill="#6BE6FF" fill-opacity="0.10" stroke="#6BE6FF" stroke-opacity="0.40"/>
+        <text x="56" y="18" fill="#A3F3FF" text-anchor="middle">web search</text>
+      </g>
+      <g transform="translate(548 350)">
+        <rect width="98" height="27" rx="13.5" fill="#A797FF" fill-opacity="0.11" stroke="#A797FF" stroke-opacity="0.42"/>
+        <text x="49" y="18" fill="#D0C7FF" text-anchor="middle">Logfire</text>
+      </g>
+      <g transform="translate(762 356)">
+        <rect width="76" height="27" rx="13.5" fill="#78E0B5" fill-opacity="0.10" stroke="#78E0B5" stroke-opacity="0.42"/>
+        <text x="38" y="18" fill="#A9F5D3" text-anchor="middle">MCP</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- ambient points -->
+  <g filter="url(#smallGlow)">
+    <circle cx="1410" cy="104" r="3" fill="#FFB86B"/><circle cx="1492" cy="184" r="2" fill="#6BE6FF"/><circle cx="1330" cy="426" r="3" fill="#FF6B73"/><circle cx="1048" cy="80" r="2" fill="#A797FF"/><circle cx="1450" cy="386" r="2" fill="#78E0B5"/>
+  </g>
+  <g fill="#FFFFFF" opacity="0.42"><circle cx="1010" cy="420" r="1.5"/><circle cx="1515" cy="300" r="1.5"/><circle cx="900" cy="72" r="1.5"/></g>
+</svg>

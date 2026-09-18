@@ -1,5 +1,7 @@
 # pydantic-ai Tutorial
 
+![Pydantic AI Totorial hero](./pydantic-ai-tutorial-hero.svg)
+
 A small, hands-on path for learning **Pydantic AI** and agentic coding.
 
 Each numbered script is a complete, runnable example. Read it, run it, then change something (instructions, tools, or the user prompt) so you can see how the agent behaves. You do not need a cloud API key for the default setup: the examples talk to a **local OpenAI-compatible server** (LM Studio) at `http://localhost:1234/v1`.
