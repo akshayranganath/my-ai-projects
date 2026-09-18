@@ -1,0 +1,22 @@
+[project]
+name = "pydantic-ai-tutorial"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { email = "akshay.ranganath@glean.com" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "asyncio>=4.0.0",
+    "logfire>=5.1.0",
+    "pydantic-ai>=2.44.0",
+    "pydantic-ai-slim[duckduckgo]>=2.44.0",
+]
+
+[project.scripts]
+pydantic-ai-tutorial = "pydantic_ai_tutorial:main"
+
+[build-system]
+requires = ["uv_build>=0.12.9,<0.13.0"]
+build-backend = "uv_build"
