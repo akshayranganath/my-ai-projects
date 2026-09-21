@@ -49,7 +49,7 @@ agent = Agent(
     or explicitly asks you to search. Use it no more than twice for one user request.
     After receiving useful search results, answer the user instead of searching again. When using search, always include the source URLs in the answer.            
     
-    Use file system MCP when trying to write, edit or read from a file.""",
+    Use file system MCP when trying to write, edit or read from a file. If the file has an extension `.md`, user expects a markdown file. So format it accordingly.""",
     capabilities=[
         WebSearch(local="duckduckgo")
     ],
