@@ -1,10 +1,10 @@
 # pydantic-ai Tutorial
 
-![Pydantic AI Totorial hero](./pydantic-ai-tutorial-hero.svg)
+![Pydantic AI Tutorial hero](./pydantic-ai-tutorial-hero.svg)
 
 A small, hands-on path for learning **Pydantic AI** and agentic coding.
 
-Each numbered script is a complete, runnable example. Read it, run it, then change something (instructions, tools, or the user prompt) so you can see how the agent behaves. You do not need a cloud API key for the default setup: the examples talk to a **local OpenAI-compatible server** (LM Studio) at `http://localhost:1234/v1`.
+Each numbered script is a complete, runnable example. Read it, run it, then change something (instructions, tools, or the user prompt) so you can see how the agent behaves. You do not need a cloud API key for the default setup: lessons 1–7 talk to a **local OpenAI-compatible server** (LM Studio) at `http://localhost:1234/v1`. Lessons 8–9 read the same kind of settings from a `.env` file, so you can keep using a local model or point at another OpenAI-compatible endpoint.
 
 ## What you will learn
 
@@ -15,15 +15,17 @@ Each numbered script is a complete, runnable example. Read it, run it, then chan
 5. Trace runs with **Logfire**
 6. Add your own **tools** (`@agent.tool`)
 7. Plug in **MCP** so the agent can drive a browser (Playwright)
+8. Give the agent **filesystem MCP** access inside a safe folder
+9. Add a **restricted shell tool** for listing and searching files in that workspace
 
 ## Prerequisites
 
 - **Python 3.14+** (see `pyproject.toml`)
 - **[uv](https://docs.astral.sh/uv/)** for the virtualenv and dependencies
 - A local chat model served with an OpenAI-compatible API, for example [LM Studio](https://lmstudio.ai/)
-- **Node.js / npx** only if you run lesson 007 (Playwright MCP)
+- **Node.js / npx** if you run lesson 007 (Playwright MCP) or 008 (filesystem MCP)
 
-Default model settings in the scripts:
+Default model settings in lessons 1–7:
 
 | Setting | Value |
 | --- | --- |
@@ -31,7 +33,7 @@ Default model settings in the scripts:
 | Model name | `nvidia/nemotron-3-nano-4b` |
 | API key | `lm-studio` (placeholder; LM Studio accepts this) |
 
-If your local model name or port is different, edit the `OpenAIChatModel` / `OpenAIProvider` block at the top of the script you are running.
+If your local model name or port is different, edit the `OpenAIChatModel` / `OpenAIProvider` block at the top of the script you are running (lessons 1–7), or set the matching variables in `.env` (lessons 8–9).
 
 ## Setup
 
@@ -49,6 +51,19 @@ uv run python 001_hello_world.py
 
 Type `exit` (or Ctrl+C) to leave the interactive chat scripts.
 
+### Environment file (lessons 8–9)
+
+Those scripts call `load_dotenv()` and expect a `.env` in this directory (gitignored). Create one with:
+
+```bash
+MODEL_NAME=nvidia/nemotron-3-nano-4b
+BASE_URL=http://localhost:1234/v1
+API_KEY=lm-studio
+SAFE_FILE_SYSTEM_FOLDER=./tool_access
+```
+
+`SAFE_FILE_SYSTEM_FOLDER` is the only directory the agent should read or write. Create that folder before you run the lesson. The repo gitignores `tool_access/` and `workspace/` so generated files stay local.
+
 ## Suggested path
 
 Work through the files in order. Later lessons reuse the same chat loop and add one new idea.
@@ -60,10 +75,12 @@ Work through the files in order. Later lessons reuse the same chat loop and add 
 | 3 | `003_simple_agent_async_chat.py` | Same chat, but `asyncio` and `await agent.run(...)`. `asyncio.to_thread(input, ...)` keeps `input()` from blocking the event loop. |
 | 4 | `004_simple_agent_async_with_tools copy.py` | **Web search** via `WebSearch(local="duckduckgo")`. After each turn, `result.new_messages()` is printed so you can see tool calls. |
 | 5 | `005_simple_agent_async_with_tools_and_telemetry.py` | Same search agent, plus **Logfire** (`logfire.configure()` and `logfire.instrument_pydantic_ai()`). Instructions also limit how often the model may search. |
-| 6 | `006_agent_async_with_multiple_tools_and_telemetry copy.py` | Search **plus a custom tool** (`get_temperature_in_celcius`). Tools are Python functions the model can call. |
+| 6 | `006_agent_async_with_multiple_tools_and_telemetry.py` | Search **plus a custom tool** (`get_temperature_in_celcius`). Tools are Python functions the model can call. |
 | 7 | `007_agent_with_multiple_tools_and_telemetry_mcp.py` | Search, custom tool, **and Playwright MCP** (`MCPToolset` + `npx @playwright/mcp`). The agent can browse pages when you ask it to. |
+| 8 | `008_agent_with_file_edit_access.py` | Settings from `.env`. **Filesystem MCP** (`@modelcontextprotocol/server-filesystem`) scoped to `SAFE_FILE_SYSTEM_FOLDER`, prefixed as `fs`. |
+| 9 | `009_agent_with_file_edit_bash_access.py` | Same `.env` workspace, plus a **custom shell tool** (`run_workspace_command`) that only allows a short list of read-oriented commands (`ls`, `cat`, `grep`, `git`, and similar). |
 
-There are extra `* copy.py` files next to some lessons. They are working copies of the same step; start from the numbered table above so you do not get lost.
+There are extra `* copy.py` files next to some earlier lessons. They are working copies of the same step; start from the numbered table above so you do not get lost.
 
 `src/pydantic_ai_tutorial/` is the uv package stub (`uv run pydantic-ai-tutorial` only prints a hello message). The real learning material is the numbered scripts in the project root.
 
@@ -74,8 +91,10 @@ There are extra `* copy.py` files next to some lessons. They are working copies 
 - **Lesson 5:** Run a query, then open the Logfire UI and find the trace for that run.
 - **Lesson 6:** Ask for a Fahrenheit-to-Celsius conversion and check that the custom tool is used.
 - **Lesson 7:** Ask the agent to open a public page and summarize it. First run may take longer while `npx` downloads Playwright MCP.
+- **Lesson 8:** Ask it to write a short `.md` file in the safe folder, then to read it back.
+- **Lesson 9:** Ask it to list files in the workspace (`ls`) or search file contents (`grep`). Try a command that is not allowlisted and confirm it is rejected.
 
-## Telemetry (lessons 5–7)
+## Telemetry (lessons 5–9)
 
 Those scripts call `logfire.configure()`. On first run, Logfire may prompt you to authenticate. Credentials are stored locally under `.logfire/` (gitignored). You can still run the earlier lessons without Logfire.
 
@@ -84,6 +103,12 @@ Those scripts call `logfire.configure()`. On first run, Logfire may prompt you t
 - Needs **npx** on your PATH.
 - Playwright MCP is started with `--headless`.
 - Browser session dumps may appear in `.playwright-mcp/` (gitignored).
+
+## Extra notes for lessons 8–9
+
+- Lesson 8 also needs **npx**; it starts `@modelcontextprotocol/server-filesystem` with the safe folder as the only allowed root.
+- Lesson 9 does **not** use filesystem MCP. It runs allowlisted commands with `cwd` set to `SAFE_FILE_SYSTEM_FOLDER`, a short `PATH`, a timeout, and a ban on absolute paths and `..`.
+- Do not point `SAFE_FILE_SYSTEM_FOLDER` at your home directory or this whole repo. Use a dedicated folder such as `./tool_access`.
 
 ## Project layout
 
@@ -94,8 +119,10 @@ Those scripts call `logfire.configure()`. On first run, Logfire may prompt you t
 ├── 003_simple_agent_async_chat.py
 ├── 004_simple_agent_async_with_tools copy.py
 ├── 005_simple_agent_async_with_tools_and_telemetry.py
-├── 006_agent_async_with_multiple_tools_and_telemetry copy.py
+├── 006_agent_async_with_multiple_tools_and_telemetry.py
 ├── 007_agent_with_multiple_tools_and_telemetry_mcp.py
+├── 008_agent_with_file_edit_access.py
+├── 009_agent_with_file_edit_bash_access.py
 ├── pyproject.toml
 ├── uv.lock
 └── src/pydantic_ai_tutorial/
@@ -106,3 +133,4 @@ Those scripts call `logfire.configure()`. On first run, Logfire may prompt you t
 - [Pydantic AI](https://ai.pydantic.dev/)
 - [Logfire](https://logfire.pydantic.dev/)
 - [Model Context Protocol](https://modelcontextprotocol.io/)
+- [Filesystem MCP server](https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem)
