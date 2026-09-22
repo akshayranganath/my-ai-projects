@@ -4,7 +4,7 @@
 
 A small, hands-on path for learning **Pydantic AI** and agentic coding.
 
-Each numbered script is a complete, runnable example. Read it, run it, then change something (instructions, tools, or the user prompt) so you can see how the agent behaves. You do not need a cloud API key for the default setup: lessons 1–7 talk to a **local OpenAI-compatible server** (LM Studio) at `http://localhost:1234/v1`. Lessons 8–9 read the same kind of settings from a `.env` file, so you can keep using a local model or point at another OpenAI-compatible endpoint.
+Each numbered script is a complete, runnable example. Read it, run it, then change something (instructions, tools, or the user prompt) so you can see how the agent behaves. You do not need a cloud API key for the default setup: lessons 1–7 talk to a **local OpenAI-compatible server** (LM Studio) at `http://localhost:1234/v1`. Lessons 8–10 read the same kind of settings from a `.env` file, so you can keep using a local model or point at another OpenAI-compatible endpoint.
 
 ## What you will learn
 
@@ -17,13 +17,14 @@ Each numbered script is a complete, runnable example. Read it, run it, then chan
 7. Plug in **MCP** so the agent can drive a browser (Playwright)
 8. Give the agent **filesystem MCP** access inside a safe folder
 9. Add a **restricted shell tool** for listing and searching files in that workspace
+10. Serve the agent as a **FastAPI** endpoint (search + Playwright MCP + filesystem MCP)
 
 ## Prerequisites
 
 - **Python 3.14+** (see `pyproject.toml`)
 - **[uv](https://docs.astral.sh/uv/)** for the virtualenv and dependencies
 - A local chat model served with an OpenAI-compatible API, for example [LM Studio](https://lmstudio.ai/)
-- **Node.js / npx** if you run lesson 007 (Playwright MCP) or 008 (filesystem MCP)
+- **Node.js / npx** if you run lesson 007 (Playwright MCP), 008 (filesystem MCP), or 010 (both)
 
 Default model settings in lessons 1–7:
 
@@ -33,7 +34,7 @@ Default model settings in lessons 1–7:
 | Model name | `nvidia/nemotron-3-nano-4b` |
 | API key | `lm-studio` (placeholder; LM Studio accepts this) |
 
-If your local model name or port is different, edit the `OpenAIChatModel` / `OpenAIProvider` block at the top of the script you are running (lessons 1–7), or set the matching variables in `.env` (lessons 8–9).
+If your local model name or port is different, edit the `OpenAIChatModel` / `OpenAIProvider` block at the top of the script you are running (lessons 1–7), or set the matching variables in `.env` (lessons 8–10).
 
 ## Setup
 
@@ -49,9 +50,9 @@ Start LM Studio, load a model, and turn on the local server on port **1234**. Th
 uv run python 001_hello_world.py
 ```
 
-Type `exit` (or Ctrl+C) to leave the interactive chat scripts.
+Type `exit` (or Ctrl+C) to leave the interactive chat scripts. Lesson 10 is an HTTP server instead of a chat loop; see that row in the table below.
 
-### Environment file (lessons 8–9)
+### Environment file (lessons 8–10)
 
 Those scripts call `load_dotenv()` and expect a `.env` in this directory (gitignored). Create one with:
 
@@ -66,7 +67,7 @@ SAFE_FILE_SYSTEM_FOLDER=./tool_access
 
 ## Suggested path
 
-Work through the files in order. Later lessons reuse the same chat loop and add one new idea.
+Work through the files in order. Later lessons reuse the same chat loop and add one new idea, until lesson 10 switches the loop for an HTTP API.
 
 | Lesson | File | What to notice |
 | --- | --- | --- |
@@ -79,6 +80,7 @@ Work through the files in order. Later lessons reuse the same chat loop and add 
 | 7 | `007_agent_with_multiple_tools_and_telemetry_mcp.py` | Search, custom tool, **and Playwright MCP** (`MCPToolset` + `npx @playwright/mcp`). The agent can browse pages when you ask it to. |
 | 8 | `008_agent_with_file_edit_access.py` | Settings from `.env`. **Filesystem MCP** (`@modelcontextprotocol/server-filesystem`) scoped to `SAFE_FILE_SYSTEM_FOLDER`, prefixed as `fs`. |
 | 9 | `009_agent_with_file_edit_bash_access.py` | Same `.env` workspace, plus a **custom shell tool** (`run_workspace_command`) that only allows a short list of read-oriented commands (`ls`, `cat`, `grep`, `git`, and similar). |
+| 10 | `010_agent_as_an_api.py` | Same search + Playwright + filesystem MCP stack, exposed as a **FastAPI** app. `POST /chat` with JSON; pass `session_id` to keep history. |
 
 There are extra `* copy.py` files next to some earlier lessons. They are working copies of the same step; start from the numbered table above so you do not get lost.
 
@@ -93,8 +95,9 @@ There are extra `* copy.py` files next to some earlier lessons. They are working
 - **Lesson 7:** Ask the agent to open a public page and summarize it. First run may take longer while `npx` downloads Playwright MCP.
 - **Lesson 8:** Ask it to write a short `.md` file in the safe folder, then to read it back.
 - **Lesson 9:** Ask it to list files in the workspace (`ls`) or search file contents (`grep`). Try a command that is not allowlisted and confirm it is rejected.
+- **Lesson 10:** Start the API, then `POST` a prompt to `/chat`. Send a second request with the returned `session_id` and confirm it remembers the first turn. Open `/docs` for the interactive OpenAPI UI.
 
-## Telemetry (lessons 5–9)
+## Telemetry (lessons 5–10)
 
 Those scripts call `logfire.configure()`. On first run, Logfire may prompt you to authenticate. Credentials are stored locally under `.logfire/` (gitignored). You can still run the earlier lessons without Logfire.
 
@@ -104,11 +107,31 @@ Those scripts call `logfire.configure()`. On first run, Logfire may prompt you t
 - Playwright MCP is started with `--headless`.
 - Browser session dumps may appear in `.playwright-mcp/` (gitignored).
 
-## Extra notes for lessons 8–9
+## Extra notes for lessons 8–10
 
 - Lesson 8 also needs **npx**; it starts `@modelcontextprotocol/server-filesystem` with the safe folder as the only allowed root.
 - Lesson 9 does **not** use filesystem MCP. It runs allowlisted commands with `cwd` set to `SAFE_FILE_SYSTEM_FOLDER`, a short `PATH`, a timeout, and a ban on absolute paths and `..`.
 - Do not point `SAFE_FILE_SYSTEM_FOLDER` at your home directory or this whole repo. Use a dedicated folder such as `./tool_access`.
+
+## Extra notes for lesson 10
+
+- Needs **npx** (Playwright MCP and filesystem MCP), the same `.env` as lessons 8–9, and **FastAPI**.
+- The filename starts with a digit, so run the file directly rather than importing it as a module:
+
+```bash
+uv run python 010_agent_as_an_api.py
+```
+
+- The server listens on `http://127.0.0.1:8000`. FastAPI lifespan keeps the MCP subprocesses running for the life of the process instead of starting them on every request.
+- `GET /health` is a liveness check. `POST /chat` accepts `{"prompt": "...", "session_id": "..."}`. Omit `session_id` on the first request; reuse the value from the response to continue the conversation.
+- Chat history is **in memory**. Restarting the server clears sessions; files written via filesystem MCP stay in `SAFE_FILE_SYSTEM_FOLDER`.
+- Example:
+
+```bash
+curl -X POST http://127.0.0.1:8000/chat \
+  -H "Content-Type: application/json" \
+  -d '{"prompt": "Search for Pydantic AI MCP and summarize the first result."}'
+```
 
 ## Project layout
 
@@ -123,6 +146,7 @@ Those scripts call `logfire.configure()`. On first run, Logfire may prompt you t
 ├── 007_agent_with_multiple_tools_and_telemetry_mcp.py
 ├── 008_agent_with_file_edit_access.py
 ├── 009_agent_with_file_edit_bash_access.py
+├── 010_agent_as_an_api.py
 ├── pyproject.toml
 ├── uv.lock
 └── src/pydantic_ai_tutorial/
@@ -134,3 +158,5 @@ Those scripts call `logfire.configure()`. On first run, Logfire may prompt you t
 - [Logfire](https://logfire.pydantic.dev/)
 - [Model Context Protocol](https://modelcontextprotocol.io/)
 - [Filesystem MCP server](https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem)
+- [FastAPI](https://fastapi.tiangolo.com/)
+- [Playwright MCP](https://github.com/microsoft/playwright-mcp)
