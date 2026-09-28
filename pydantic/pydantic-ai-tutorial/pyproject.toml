@@ -13,6 +13,7 @@ dependencies = [
     "logfire[fastapi]>=5.1.0",
     "pydantic-ai>=2.44.0",
     "pydantic-ai-slim[duckduckgo,mcp]>=2.44.0",
+    "typesafe-sdk>=0.7.2",
 ]
 
 [project.scripts]
