@@ -13,9 +13,6 @@ from typesafe_sdk import Choice, TypeSafeClient
 
 import traceback
 import asyncio
-import os
-import shlex
-from pathlib import Path
 from dotenv import load_dotenv
 # load environment variables (e.g. Jev / Logfire credentials) from .env
 load_dotenv()
