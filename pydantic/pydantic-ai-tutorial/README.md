@@ -4,7 +4,7 @@
 
 A small, hands-on path for learning **Pydantic AI** and agentic coding.
 
-Each numbered script is a complete, runnable example. Read it, run it, then change something (instructions, tools, or the user prompt) so you can see how the agent behaves. You do not need a cloud API key for the default setup: lessons 1–7 talk to a **local OpenAI-compatible server** (LM Studio) at `http://localhost:1234/v1`. Lessons 8–10 read the same kind of settings from a `.env` file, so you can keep using a local model or point at another OpenAI-compatible endpoint.
+Each numbered script is a complete, runnable example. Read it, run it, then change something (instructions, tools, or the user prompt) so you can see how the agent behaves. You do not need a cloud API key for the chat model: lessons 1–7 and 11 talk to a **local OpenAI-compatible server** (LM Studio) at `http://localhost:1234/v1`. Lessons 8–10 read the same kind of settings from a `.env` file, so you can keep using a local model or point at another OpenAI-compatible endpoint. Lesson 11 also calls `load_dotenv()` so a Jev key (`TYPESAFE_API_KEY`) can live in that file; its chat model settings stay in the script.
 
 ## What you will learn
 
@@ -18,6 +18,7 @@ Each numbered script is a complete, runnable example. Read it, run it, then chan
 8. Give the agent **filesystem MCP** access inside a safe folder
 9. Add a **restricted shell tool** for listing and searching files in that workspace
 10. Serve the agent as a **FastAPI** endpoint (search + Playwright MCP + filesystem MCP)
+11. Route each prompt to a specialised agent with **Jev** (`typesafe_sdk`)
 
 ## Prerequisites
 
@@ -34,7 +35,7 @@ Default model settings in lessons 1–7:
 | Model name | `nvidia/nemotron-3-nano-4b` |
 | API key | `lm-studio` (placeholder; LM Studio accepts this) |
 
-If your local model name or port is different, edit the `OpenAIChatModel` / `OpenAIProvider` block at the top of the script you are running (lessons 1–7), or set the matching variables in `.env` (lessons 8–10).
+If your local model name or port is different, edit the `OpenAIChatModel` / `OpenAIProvider` block at the top of the script you are running (lessons 1–7 and 11), or set the matching variables in `.env` (lessons 8–10).
 
 ## Setup
 
@@ -65,26 +66,27 @@ SAFE_FILE_SYSTEM_FOLDER=./tool_access
 
 `SAFE_FILE_SYSTEM_FOLDER` is the only directory the agent should read or write. Create that folder before you run the lesson. The repo gitignores `tool_access/` and `workspace/` so generated files stay local.
 
+Lesson 11 reads `TYPESAFE_API_KEY` from the same `.env` (see the notes for that lesson). It does not read `MODEL_NAME`, `BASE_URL`, or `API_KEY`.
+
 ## Suggested path
 
-Work through the files in order. Later lessons reuse the same chat loop and add one new idea, until lesson 10 switches the loop for an HTTP API.
+Work through the files in order. Later lessons reuse the same chat loop and add one new idea, until lesson 10 switches the loop for an HTTP API. Lesson 11 returns to the chat loop and routes each prompt.
 
 | Lesson | File | What to notice |
 | --- | --- | --- |
 | 1 | `001_hello_world.py` | Smallest possible agent: model + instructions + `run_sync`. One prompt, one reply. |
 | 2 | `002_simple_agent_chat.py` | Interactive loop. `message_history` from `result.all_messages()` so the agent remembers the conversation. |
 | 3 | `003_simple_agent_async_chat.py` | Same chat, but `asyncio` and `await agent.run(...)`. `asyncio.to_thread(input, ...)` keeps `input()` from blocking the event loop. |
-| 4 | `004_simple_agent_async_with_tools copy.py` | **Web search** via `WebSearch(local="duckduckgo")`. After each turn, `result.new_messages()` is printed so you can see tool calls. |
+| 4 | `004_simple_agent_async_with_tools.py` | **Web search** via `WebSearch(local="duckduckgo")`. After each turn, `result.new_messages()` is printed so you can see tool calls. |
 | 5 | `005_simple_agent_async_with_tools_and_telemetry.py` | Same search agent, plus **Logfire** (`logfire.configure()` and `logfire.instrument_pydantic_ai()`). Instructions also limit how often the model may search. |
 | 6 | `006_agent_async_with_multiple_tools_and_telemetry.py` | Search **plus a custom tool** (`get_temperature_in_celcius`). Tools are Python functions the model can call. |
 | 7 | `007_agent_with_multiple_tools_and_telemetry_mcp.py` | Search, custom tool, **and Playwright MCP** (`MCPToolset` + `npx @playwright/mcp`). The agent can browse pages when you ask it to. |
 | 8 | `008_agent_with_file_edit_access.py` | Settings from `.env`. **Filesystem MCP** (`@modelcontextprotocol/server-filesystem`) scoped to `SAFE_FILE_SYSTEM_FOLDER`, prefixed as `fs`. |
-| 9 | `009_agent_with_file_edit_bash_access.py` | Same `.env` workspace, plus a **custom shell tool** (`run_workspace_command`) that only allows a short list of read-oriented commands (`ls`, `cat`, `grep`, `git`, and similar). |
+| 9 | `009_agent_with_file_edit_bash_access.py` | Same `.env` workspace, plus a **custom shell tool** (`run_workspace_command`, `@agent.tool_plain`). Allowlist: `pwd`, `ls`, `cat`, `find`, `grep`, `head`, `tail`, `git`. |
 | 10 | `010_agent_as_an_api.py` | Same search + Playwright + filesystem MCP stack, exposed as a **FastAPI** app. `POST /chat` with JSON; pass `session_id` to keep history. |
+| 11 | `011_agent_with_jev.py` | Three agents (elementary, research, general) share one local model and web search. Jev classifies the prompt, then the matching agent answers. One `message_history` is shared. A failed classification falls back to the general agent. |
 
-There are extra `* copy.py` files next to some earlier lessons. They are working copies of the same step; start from the numbered table above so you do not get lost.
-
-`src/pydantic_ai_tutorial/` is the uv package stub (`uv run pydantic-ai-tutorial` only prints a hello message). The real learning material is the numbered scripts in the project root.
+`src/pydantic_ai_tutorial/` is the uv package stub (`uv run pydantic-ai-tutorial` only prints a hello message). `src/pydantic_ai/` is a separate stub and is not the script entry point. The real learning material is the numbered scripts in the project root.
 
 ## Try this as you go
 
@@ -96,8 +98,9 @@ There are extra `* copy.py` files next to some earlier lessons. They are working
 - **Lesson 8:** Ask it to write a short `.md` file in the safe folder, then to read it back.
 - **Lesson 9:** Ask it to list files in the workspace (`ls`) or search file contents (`grep`). Try a command that is not allowlisted and confirm it is rejected.
 - **Lesson 10:** Start the API, then `POST` a prompt to `/chat`. Send a second request with the returned `session_id` and confirm it remembers the first turn. Open `/docs` for the interactive OpenAPI UI.
+- **Lesson 11:** Ask a simple question, then a research-style question, and check the printed label (`Assisstant-elementary`, `Assisstant-research`, or `Assisstant-general`). Ask a follow-up and confirm the shared history still carries over.
 
-## Telemetry (lessons 5–10)
+## Telemetry (lessons 5–11)
 
 Those scripts call `logfire.configure()`. On first run, Logfire may prompt you to authenticate. Credentials are stored locally under `.logfire/` (gitignored). You can still run the earlier lessons without Logfire.
 
@@ -110,7 +113,7 @@ Those scripts call `logfire.configure()`. On first run, Logfire may prompt you t
 ## Extra notes for lessons 8–10
 
 - Lesson 8 also needs **npx**; it starts `@modelcontextprotocol/server-filesystem` with the safe folder as the only allowed root.
-- Lesson 9 does **not** use filesystem MCP. It runs allowlisted commands with `cwd` set to `SAFE_FILE_SYSTEM_FOLDER`, a short `PATH`, a timeout, and a ban on absolute paths and `..`.
+- Lesson 9 does not attach filesystem MCP. It runs allowlisted commands (`pwd`, `ls`, `cat`, `find`, `grep`, `head`, `tail`, `git`) with `cwd` set to `SAFE_FILE_SYSTEM_FOLDER`, `PATH` set to `/usr/bin:/bin`, a 20 second timeout, and a ban on absolute paths and `..`.
 - Do not point `SAFE_FILE_SYSTEM_FOLDER` at your home directory or this whole repo. Use a dedicated folder such as `./tool_access`.
 
 ## Extra notes for lesson 10
@@ -133,6 +136,14 @@ curl -X POST http://127.0.0.1:8000/chat \
   -d '{"prompt": "Search for Pydantic AI MCP and summarize the first result."}'
 ```
 
+## Extra notes for lesson 11
+
+- The chat model is hardcoded like lessons 1–7 (`nvidia/nemotron-3-nano-4b` at `http://localhost:1234/v1`).
+- `TypeSafeClient()` needs `TYPESAFE_API_KEY` in `.env`. The client defaults to `https://api.typesafe.ai` and model `jev-latest` unless `TYPESAFE_BASE_URL` or `TYPESAFE_DEFAULT_MODEL` is set.
+- Classification is one `Choice` question, `query_type`, with criteria `elementary`, `research`, and `general`. `identify_agent_type` calls `jev_client.system_one`.
+- All three agents can search with `WebSearch(local="duckduckgo")`. The instructions differ by audience.
+- Run it with `uv run python 011_agent_with_jev.py`.
+
 ## Project layout
 
 ```
@@ -140,16 +151,18 @@ curl -X POST http://127.0.0.1:8000/chat \
 ├── 001_hello_world.py
 ├── 002_simple_agent_chat.py
 ├── 003_simple_agent_async_chat.py
-├── 004_simple_agent_async_with_tools copy.py
+├── 004_simple_agent_async_with_tools.py
 ├── 005_simple_agent_async_with_tools_and_telemetry.py
 ├── 006_agent_async_with_multiple_tools_and_telemetry.py
 ├── 007_agent_with_multiple_tools_and_telemetry_mcp.py
 ├── 008_agent_with_file_edit_access.py
 ├── 009_agent_with_file_edit_bash_access.py
 ├── 010_agent_as_an_api.py
+├── 011_agent_with_jev.py
 ├── pyproject.toml
 ├── uv.lock
-└── src/pydantic_ai_tutorial/
+├── src/pydantic_ai_tutorial/
+└── src/pydantic_ai/
 ```
 
 ## Docs

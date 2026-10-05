@@ -33,6 +33,14 @@ agent = Agent(
     ]
 )
 
+# let's add a simple tool for example
+@agent.tool
+async def get_temperature_in_celcius(temperature: float)->str:
+    '''
+    Convert the temperature in degree farenheight to degree celcius
+    '''
+    return f"{(temperature-32)*(5/9):.2}"
+
 async def main()->None:
 
     message_history = []
