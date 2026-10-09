@@ -4,7 +4,7 @@
 
 A small, hands-on path for learning **Pydantic AI** and agentic coding.
 
-Each numbered script is a complete, runnable example. Read it, run it, then change something (instructions, tools, or the user prompt) so you can see how the agent behaves. You do not need a cloud API key for the chat model: lessons 1–7 and 11 talk to a **local OpenAI-compatible server** (LM Studio) at `http://localhost:1234/v1`. Lessons 8–10 read the same kind of settings from a `.env` file, so you can keep using a local model or point at another OpenAI-compatible endpoint. Lesson 11 also calls `load_dotenv()` so a Jev key (`TYPESAFE_API_KEY`) can live in that file; its chat model settings stay in the script.
+Each numbered script is a complete, runnable example. Read it, run it, then change something (instructions, tools, or the user prompt) so you can see how the agent behaves. You do not need a cloud API key for the chat model: by default every lesson talks to a **local OpenAI-compatible server** (LM Studio) at `http://localhost:1234/v1`. All lessons read the model settings from a `.env` file, so you can keep using a local model or point at another OpenAI-compatible endpoint without editing the scripts. Lesson 11 also reads a Jev key (`TYPESAFE_API_KEY`) from that file.
 
 ## What you will learn
 
@@ -27,15 +27,15 @@ Each numbered script is a complete, runnable example. Read it, run it, then chan
 - A local chat model served with an OpenAI-compatible API, for example [LM Studio](https://lmstudio.ai/)
 - **Node.js / npx** if you run lesson 007 (Playwright MCP), 008 (filesystem MCP), or 010 (both)
 
-Default model settings in lessons 1–7:
+Suggested model settings for LM Studio (set them in `.env`, see below):
 
-| Setting | Value |
+| Variable | Value |
 | --- | --- |
-| Base URL | `http://localhost:1234/v1` |
-| Model name | `nvidia/nemotron-3-nano-4b` |
-| API key | `lm-studio` (placeholder; LM Studio accepts this) |
+| `BASE_URL` | `http://localhost:1234/v1` |
+| `MODEL_NAME` | `nvidia/nemotron-3-nano-4b` |
+| `API_KEY` | `lm-studio` (placeholder; LM Studio accepts this) |
 
-If your local model name or port is different, edit the `OpenAIChatModel` / `OpenAIProvider` block at the top of the script you are running (lessons 1–7 and 11), or set the matching variables in `.env` (lessons 8–10).
+If your local model name or port is different, change the matching variables in `.env`.
 
 ## Setup
 
@@ -45,17 +45,9 @@ From this directory:
 uv sync
 ```
 
-Start LM Studio, load a model, and turn on the local server on port **1234**. Then run a lesson with:
+### Environment file
 
-```bash
-uv run python 001_hello_world.py
-```
-
-Type `exit` (or Ctrl+C) to leave the interactive chat scripts. Lesson 10 is an HTTP server instead of a chat loop; see that row in the table below.
-
-### Environment file (lessons 8–10)
-
-Those scripts call `load_dotenv()` and expect a `.env` in this directory (gitignored). Create one with:
+Every lesson calls `load_dotenv()` and expects a `.env` in this directory (gitignored). Create it before running lesson 1:
 
 ```bash
 MODEL_NAME=nvidia/nemotron-3-nano-4b
@@ -64,9 +56,21 @@ API_KEY=lm-studio
 SAFE_FILE_SYSTEM_FOLDER=./tool_access
 ```
 
-`SAFE_FILE_SYSTEM_FOLDER` is the only directory the agent should read or write. Create that folder before you run the lesson. The repo gitignores `tool_access/` and `workspace/` so generated files stay local.
+Alternatively, start from the provided template: edit `env.sample` with your values and rename it to `.env` (or copy it with `cp env.sample .env` to keep the template). The sample also includes `TYPESAFE_API_KEY` for lesson 11.
 
-Lesson 11 reads `TYPESAFE_API_KEY` from the same `.env` (see the notes for that lesson). It does not read `MODEL_NAME`, `BASE_URL`, or `API_KEY`.
+`SAFE_FILE_SYSTEM_FOLDER` is only used by lessons 8–10. It is the only directory the agent should read or write. Create that folder before you run those lessons. The repo gitignores `tool_access/` and `workspace/` so generated files stay local.
+
+Lesson 11 also reads `TYPESAFE_API_KEY` from the same `.env` (see the notes for that lesson).
+
+### Run a lesson
+
+Start LM Studio, load a model, and turn on the local server on port **1234**. Then run a lesson with:
+
+```bash
+uv run python 001_hello_world.py
+```
+
+Type `exit` (or Ctrl+C) to leave the interactive chat scripts. Lesson 10 is an HTTP server instead of a chat loop; see that row in the table below.
 
 ## Suggested path
 
@@ -81,7 +85,7 @@ Work through the files in order. Later lessons reuse the same chat loop and add 
 | 5 | `005_simple_agent_async_with_tools_and_telemetry.py` | Same search agent, plus **Logfire** (`logfire.configure()` and `logfire.instrument_pydantic_ai()`). Instructions also limit how often the model may search. |
 | 6 | `006_agent_async_with_multiple_tools_and_telemetry.py` | Search **plus a custom tool** (`get_temperature_in_celcius`). Tools are Python functions the model can call. |
 | 7 | `007_agent_with_multiple_tools_and_telemetry_mcp.py` | Search, custom tool, **and Playwright MCP** (`MCPToolset` + `npx @playwright/mcp`). The agent can browse pages when you ask it to. |
-| 8 | `008_agent_with_file_edit_access.py` | Settings from `.env`. **Filesystem MCP** (`@modelcontextprotocol/server-filesystem`) scoped to `SAFE_FILE_SYSTEM_FOLDER`, prefixed as `fs`. |
+| 8 | `008_agent_with_file_edit_access.py` | Workspace from `.env`. **Filesystem MCP** (`@modelcontextprotocol/server-filesystem`) scoped to `SAFE_FILE_SYSTEM_FOLDER`, prefixed as `fs`. |
 | 9 | `009_agent_with_file_edit_bash_access.py` | Same `.env` workspace, plus a **custom shell tool** (`run_workspace_command`, `@agent.tool_plain`). Allowlist: `pwd`, `ls`, `cat`, `find`, `grep`, `head`, `tail`, `git`. |
 | 10 | `010_agent_as_an_api.py` | Same search + Playwright + filesystem MCP stack, exposed as a **FastAPI** app. `POST /chat` with JSON; pass `session_id` to keep history. |
 | 11 | `011_agent_with_jev.py` | Three agents (elementary, research, general) share one local model and web search. Jev classifies the prompt, then the matching agent answers. One `message_history` is shared. A failed classification falls back to the general agent. |
@@ -138,7 +142,7 @@ curl -X POST http://127.0.0.1:8000/chat \
 
 ## Extra notes for lesson 11
 
-- The chat model is hardcoded like lessons 1–7 (`nvidia/nemotron-3-nano-4b` at `http://localhost:1234/v1`).
+- The chat model uses the same `MODEL_NAME`, `BASE_URL`, and `API_KEY` settings from `.env` as the other lessons.
 - `TypeSafeClient()` needs `TYPESAFE_API_KEY` in `.env`. The client defaults to `https://api.typesafe.ai` and model `jev-latest` unless `TYPESAFE_BASE_URL` or `TYPESAFE_DEFAULT_MODEL` is set.
 - Classification is one `Choice` question, `query_type`, with criteria `elementary`, `research`, and `general`. `identify_agent_type` calls `jev_client.system_one`.
 - All three agents can search with `WebSearch(local="duckduckgo")`. The instructions differ by audience.

@@ -3,6 +3,8 @@ import traceback
 import asyncio
 import os
 from pprint import pprint
+from dotenv import load_dotenv
+load_dotenv()
 
 from pydantic_ai import Agent, capabilities
 from pydantic_ai.models.openai import OpenAIChatModel
@@ -13,10 +15,10 @@ os.environ['PYDANTIC_AI_NO_BANNER'] = "1"
 
 
 model = OpenAIChatModel(
-    model_name="nvidia/nemotron-3-nano-4b",
+    model_name=os.environ.get('MODEL_NAME'),
     provider=OpenAIProvider(
-        base_url = 'http://localhost:1234/v1',
-        api_key='lm-studio'
+        base_url = os.environ.get('BASE_URL'),
+        api_key= os.environ.get('API_KEY')
     )
 )
 
